@@ -116,38 +116,39 @@ func End_p() HParser { return C.h_end_p() }
 //HAMMER_FN_DECL_NOARG(HParser*, h_nothing_p);
 func Nothing_p() HParser { return C.h_nothing_p() }
 
-
-
-
-/* ok, a) this is the most nasty ball of hacked up ptr shit ever, b)
-   the funcs called here are in src/parsers/choice.c, not hammer.h.
-   cus the original one is variatic and cgo can't do va funcs as of
-   1.2rc2 <_<... */
-
 //HAMMER_FN_DECL_VARARGS_ATTR(__attribute__((sentinel)), HParser*, h_sequence, HParser* p);
 func Sequence(p ...HParser) HParser {
-	var cPtrs []unsafe.Pointer
-	for _, cPtr := range(p) {
-		cPtrs = append(cPtrs, (unsafe.Pointer)(cPtr))
+	ptrs := make([]unsafe.Pointer, len(p)+1)
+	for i, ptr := range p {
+		ptrs[i] = unsafe.Pointer(ptr)
 	}
-	var cPtr2cPtrs = &cPtrs[0]
 
-	return C.h_sequence__a(cPtr2cPtrs)
+	// ptrs is a null termated array
+	ptrs[len(ptrs)-1] = nil
+
+	// C.h_sequence__a is defined in src/parsers/choice.c and not hammer.h.
+	// This function is equivlent to the sequence function in hammer.h but
+	// accepts an array instead of a variatic.
+
+	return C.h_sequence__a(&ptrs[0])
 }
 
 //HAMMER_FN_DECL_VARARGS_ATTR(__attribute__((sentinel)), HParser*, h_choice, HParser* p);
 func Choice(p ...HParser) HParser {
-	var cPtrs []unsafe.Pointer
-	for _, cPtr := range(p) {
-		cPtrs = append(cPtrs, (unsafe.Pointer)(cPtr))
+	ptrs := make([]unsafe.Pointer, len(p)+1)
+	for i, ptr := range p {
+		ptrs[i] = unsafe.Pointer(ptr)
 	}
-	var cPtr2cPtrs = &cPtrs[0]
 
-	return C.h_choice__a(cPtr2cPtrs)
+	// ptrs is a null termated array
+	ptrs[len(ptrs)-1] = nil
+
+	// C.h_choice__a is defined in src/parsers/choice.c and not hammer.h.
+	// This function is equivlent to the sequence function in hammer.h but
+	// accepts an array instead of a variatic.
+
+	return C.h_choice__a(&ptrs[0])
 }
-
-
-
 
 //HAMMER_FN_DECL(HParser*, h_butnot,  HParser* p1,  HParser* p2);
 func Butnot(p1 HParser, p2 HParser) HParser { return C.h_butnot(p1, p2) }
