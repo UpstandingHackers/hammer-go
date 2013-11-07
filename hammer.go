@@ -18,7 +18,6 @@ type HPredicate C.HPredicate
 type HParser *C.HParser
 type HParserBackend C.HParserBackend
 type File *C.FILE
-type Void uintptr
 
 // HAMMER_FN_DECL(HParseResult*, h_parse,  HParser* parser,  uint8_t* input, size_t length);
 func Parse(parser HParser, input *uint8, length uintptr) HParseResult {
@@ -212,6 +211,6 @@ func Pprint(stream File, tok HParsedToken, indent int, delta int) {
 }
 
 //HAMMER_FN_DECL(int, h_compile, HParser* parser, HParserBackend backend,  void* params);
-func Compile(parser HParser, backend HParserBackend, params Void) int {
-	return int(C.h_compile(parser, (C.HParserBackend)(backend), (unsafe.Pointer)(params)))
+func Compile(parser HParser, backend HParserBackend, params unsafe.Pointer) int {
+	return int(C.h_compile(parser, (C.HParserBackend)(backend), params))
 }
