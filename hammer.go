@@ -21,25 +21,25 @@ type File *C.FILE
 
 // HAMMER_FN_DECL(HParseResult*, h_parse,  HParser* parser,  uint8_t* input, size_t length);
 func Parse(parser HParser, input *uint8, length uintptr) HParseResult {
-	return C.h_parse(parser, (*C.uint8_t)(input), (C.size_t)(length))
+	return C.h_parse(parser, (*C.uint8_t)(input), C.size_t(length))
 }
 
 // HAMMER_FN_DECL(HParser*, h_token,  uint8_t *str,  size_t len);
 func Token(str *uint8, length uintptr) HParser {
-	return C.h_token((*C.uint8_t)(str), (C.size_t)(length))
+	return C.h_token((*C.uint8_t)(str), C.size_t(length))
 }
 
 // HAMMER_FN_DECL(HParser*, h_ch,  uint8_t c);
-func Ch(c uint8) HParser { return C.h_ch((C.uint8_t)(c)) }
+func Ch(c uint8) HParser { return C.h_ch(C.uint8_t(c)) }
 
 // HAMMER_FN_DECL(HParser*, h_ch_range,  uint8_t lower,  uint8_t upper);
 func Ch_range(lower uint8, upper uint8) HParser {
-	return C.h_ch_range((C.uint8_t)(lower), (C.uint8_t)(upper))
+	return C.h_ch_range(C.uint8_t(lower), C.uint8_t(upper))
 }
 
 // HAMMER_FN_DECL(HParser*, h_int_range,  HParser *p,  int64_t lower,  int64_t upper);
 func Int_range(p HParser, lower int64, upper int64) HParser {
-	return C.h_int_range(p, (C.int64_t)(lower), (C.int64_t)(upper))
+	return C.h_int_range(p, C.int64_t(lower), C.int64_t(upper))
 }
 
 // HAMMER_FN_DECL(HParser*, h_bits, size_t len, bool sign);
@@ -52,7 +52,7 @@ func Bits(len uintptr, sign bool) HParser {
 	} else if sign == false {
 		retVal = 0
 	}
-	return C.h_bits((C.size_t)(len), retVal)
+	return C.h_bits(C.size_t(len), retVal)
 }
 
 // HAMMER_FN_DECL_NOARG(HParser*, h_int64);
@@ -92,16 +92,16 @@ func Right(p HParser, q HParser) HParser { return C.h_right(p, q) }
 func Middle(p HParser, x HParser, q HParser) HParser { return C.h_middle(p, x, q) }
 
 //HAMMER_FN_DECL(HParser*, h_action,  HParser* p,  HAction a);
-func Action(p HParser, a HAction) HParser { return C.h_action(p, (C.HAction)(a)) }
+func Action(p HParser, a HAction) HParser { return C.h_action(p, C.HAction(a)) }
 
 //HAMMER_FN_DECL(HParser*, h_in,  uint8_t *charset, size_t length);
 func In(charset *uint8, length uintptr) HParser {
-	return C.h_in((*C.uint8_t)(charset), (C.size_t)(length))
+	return C.h_in((*C.uint8_t)(charset), C.size_t(length))
 }
 
 //HAMMER_FN_DECL(HParser*, h_not_in,  uint8_t *charset, size_t length);
 func Not_in(charset *uint8, length uintptr) HParser {
-	return C.h_not_in((*C.uint8_t)(charset), (C.size_t)(length))
+	return C.h_not_in((*C.uint8_t)(charset), C.size_t(length))
 }
 
 //HAMMER_FN_DECL_NOARG(HParser*, h_end_p);
@@ -160,7 +160,7 @@ func Many(p HParser) HParser { return C.h_many(p) }
 func Many1(p HParser) HParser { return C.h_many1(p) }
 
 //HAMMER_FN_DECL(HParser*, h_repeat_n,  HParser* p,  size_t n);
-func Repeat_n(p HParser, n uintptr) HParser { return C.h_repeat_n(p, (C.size_t)(n)) }
+func Repeat_n(p HParser, n uintptr) HParser { return C.h_repeat_n(p, C.size_t(n)) }
 
 //HAMMER_FN_DECL(HParser*, h_optional,  HParser* p);
 func Optional(p HParser) HParser { return C.h_optional(p) }
@@ -207,10 +207,10 @@ func Write_result_unamb(tok HParsedToken) string {
 
 // HAMMER_FN_DECL(void, h_pprint, FILE* stream,  HParsedToken* tok, int indent, int delta);
 func Pprint(stream File, tok HParsedToken, indent int, delta int) {
-	C.h_pprint(stream, tok, (C.int)(indent), (C.int)(delta))
+	C.h_pprint(stream, tok, C.int(indent), C.int(delta))
 }
 
 //HAMMER_FN_DECL(int, h_compile, HParser* parser, HParserBackend backend,  void* params);
 func Compile(parser HParser, backend HParserBackend, params unsafe.Pointer) int {
-	return int(C.h_compile(parser, (C.HParserBackend)(backend), params))
+	return int(C.h_compile(parser, C.HParserBackend(backend), params))
 }
