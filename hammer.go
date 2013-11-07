@@ -1,21 +1,16 @@
 package hammer
 
 import (
-	/*
-		#cgo CFLAGS: -Ihammer/src
-		#cgo LDFLAGS: hammer/build/opt/src/libhammer.a
-		#include <hammer.h>
-	*/
-	"C"
 	"unsafe"
 )
 
-/* There is no function in hammer that passes by value except
-the input function/. Because of this, by defining go
-"types" as the pointers needed as arguments, we satisfy
-the requirements of the lib without having to instanciate
-any of the hammer.structs in the go extension. \o/
-[thnx qux!] */
+/*
+	#cgo CFLAGS: -Ihammer/src
+	#cgo LDFLAGS: hammer/build/opt/src/libhammer.a
+	#include <hammer.h>
+*/
+import "C"
+
 type HParsedToken *C.HParsedToken
 type HParseResult *C.HParseResult
 type HAction C.HAction
