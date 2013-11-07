@@ -1,10 +1,11 @@
 package hammer
+
 import (
-/*
-	#cgo CFLAGS: -Ihammer/src
-	#cgo LDFLAGS: hammer/build/opt/src/libhammer.a
-	#include <hammer.h>
-*/
+	/*
+		#cgo CFLAGS: -Ihammer/src
+		#cgo LDFLAGS: hammer/build/opt/src/libhammer.a
+		#include <hammer.h>
+	*/
 	"C"
 	"unsafe"
 )
@@ -43,7 +44,7 @@ func Ch_range(lower uint8, upper uint8) HParser {
 }
 
 // HAMMER_FN_DECL(HParser*, h_int_range,  HParser *p,  int64_t lower,  int64_t upper);
-func Int_range (p HParser, lower  int64, upper  int64) HParser {
+func Int_range(p HParser, lower int64, upper int64) HParser {
 	return C.h_int_range(p, (C.int64_t)(lower), (C.int64_t)(upper))
 }
 
@@ -100,12 +101,12 @@ func Middle(p HParser, x HParser, q HParser) HParser { return C.h_middle(p, x, q
 func Action(p HParser, a HAction) HParser { return C.h_action(p, (C.HAction)(a)) }
 
 //HAMMER_FN_DECL(HParser*, h_in,  uint8_t *charset, size_t length);
-func In(charset  *uint8, length uintptr) HParser {
+func In(charset *uint8, length uintptr) HParser {
 	return C.h_in((*C.uint8_t)(charset), (C.size_t)(length))
 }
 
 //HAMMER_FN_DECL(HParser*, h_not_in,  uint8_t *charset, size_t length);
-func Not_in(charset  *uint8, length uintptr) HParser {
+func Not_in(charset *uint8, length uintptr) HParser {
 	return C.h_not_in((*C.uint8_t)(charset), (C.size_t)(length))
 }
 
