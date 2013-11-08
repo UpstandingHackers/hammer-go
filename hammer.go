@@ -49,14 +49,12 @@ func Int_range(p HParser, lower int64, upper int64) HParser {
 
 // HAMMER_FN_DECL(HParser*, h_bits, size_t len, bool sign);
 func Bits(len uintptr, sign bool) HParser {
-	var retVal C.bool
-
 	// bool to C.bool conversion
+	var retVal C.bool
 	if sign {
 		retVal = 1
-	} else if sign == false {
-		retVal = 0
 	}
+
 	return C.h_bits(C.size_t(len), retVal)
 }
 

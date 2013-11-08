@@ -21,6 +21,11 @@ type hParseResult struct {
 	r *C.HParseResult
 }
 
+func Parse(parser HParser, input []byte) *HParseResult {
+	arr, n := byteToCArr(input)
+	return newHParseResult(C.h_parse(parser, arr, n))
+}
+
 func newHParseResult(r *C.HParseResult) *HParseResult {
 	ret := &HParseResult{&hParseResult{r}}
 	runtime.SetFinalizer(ret.hParseResult, (*hParseResult).free)
@@ -45,9 +50,4 @@ func (p *hParseResult) free() {
 
 	p.r = nil
 	runtime.SetFinalizer(p, nil)
-}
-
-func Parse(parser HParser, input []byte) *HParseResult {
-	arr, n := byteToCArr(input)
-	return newHParseResult(C.h_parse(parser, arr, n))
 }
