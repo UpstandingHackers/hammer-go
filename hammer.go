@@ -220,7 +220,7 @@ func Write_result_unamb(tok HParsedToken) string {
 }
 
 // HAMMER_FN_DECL(void, h_pprint, FILE* stream,  HParsedToken* tok, int indent, int delta);
-func Pprint(stream os.File, tok HParsedToken, indent int, delta int) {
+func Pprint(stream *os.File, tok HParsedToken, indent int, delta int) {
 	cfile := C.fdopen(C.int(stream.Fd()), C.wFlag)
 	C.h_pprint(cfile, tok, C.int(indent), C.int(delta))
 }
