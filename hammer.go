@@ -16,7 +16,6 @@ import (
 import "C"
 
 type HParsedToken *C.HParsedToken
-type HParseResult *C.HParseResult
 type HAction C.HAction
 type HPredicate C.HPredicate
 type HParser *C.HParser
@@ -27,12 +26,6 @@ func byteToCArr(p []byte) (arr *C.uint8_t, n C.size_t) {
 	n = C.size_t(len(p))
 
 	return
-}
-
-// HAMMER_FN_DECL(HParseResult*, h_parse,  HParser* parser,  uint8_t* input, size_t length);
-func Parse(parser HParser, input []byte) HParseResult {
-	arr, n := byteToCArr(input)
-	return C.h_parse(parser, arr, n)
 }
 
 // HAMMER_FN_DECL(HParser*, h_token,  uint8_t *str,  size_t len);
@@ -210,9 +203,6 @@ func Indirect() HParser { return C.h_indirect() }
 
 //HAMMER_FN_DECL(void, h_bind_indirect, HParser* indirect,  HParser* inner);
 func Bind_indirect(indirect HParser, inner HParser) { C.h_bind_indirect(indirect, inner) }
-
-//HAMMER_FN_DECL(void, h_parse_result_free, HParseResult *result);
-func Parse_result_free(result HParseResult) { C.h_parse_result_free(result) }
 
 //HAMMER_FN_DECL(char*, h_write_result_unamb,  HParsedToken* tok);
 func Write_result_unamb(tok HParsedToken) string {

@@ -34,10 +34,11 @@ func TestBase64(t *testing.T) {
 
 	input := []byte("aGk=") // "hi"
 	result := Parse(document, input)
+	defer result.Free()
 
 	// show result of parse actions
-	if result.ast != nil {
-		Pprint(os.Stdout, result.ast, 0, 0)
+	if result.result.ast != nil {
+		Pprint(os.Stdout, result.result.ast, 0, 0)
 	} else {
 		t.Error("fail")
 	}
