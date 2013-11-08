@@ -1,6 +1,7 @@
 package hammer
 
 import (
+	"os"
 	"unsafe"
 )
 
@@ -8,6 +9,9 @@ import (
 	#cgo CFLAGS: -Ihammer/src
 	#cgo LDFLAGS: hammer/build/opt/src/libhammer.a
 	#include <hammer.h>
+
+	// used in go Pprint() function
+	char* wFlag = "w";
 */
 import "C"
 
@@ -17,7 +21,6 @@ type HAction C.HAction
 type HPredicate C.HPredicate
 type HParser *C.HParser
 type HParserBackend C.HParserBackend
-type File *C.FILE
 
 // HAMMER_FN_DECL(HParseResult*, h_parse,  HParser* parser,  uint8_t* input, size_t length);
 func Parse(parser HParser, input *uint8, length uintptr) HParseResult {
@@ -206,8 +209,9 @@ func Write_result_unamb(tok HParsedToken) string {
 }
 
 // HAMMER_FN_DECL(void, h_pprint, FILE* stream,  HParsedToken* tok, int indent, int delta);
-func Pprint(stream File, tok HParsedToken, indent int, delta int) {
-	C.h_pprint(stream, tok, C.int(indent), C.int(delta))
+func Pprint(stream os.File, tok HParsedToken, indent int, delta int) {
+	cfile := C.fdopen(C.int(stream.Fd()), C.wFlag)
+	C.h_pprint(cfile, tok, C.int(indent), C.int(delta))
 }
 
 //HAMMER_FN_DECL(int, h_compile, HParser* parser, HParserBackend backend,  void* params);
