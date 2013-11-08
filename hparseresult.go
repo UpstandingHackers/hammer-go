@@ -32,7 +32,6 @@ func newHParseResult(r *C.HParseResult) *HParseResult {
 	return ret
 }
 
-//HAMMER_FN_DECL(void, h_parse_result_free, HParseResult *result);
 func (p *HParseResult) Free() {
 	if p == nil {
 		return
