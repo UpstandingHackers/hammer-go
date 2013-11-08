@@ -1,6 +1,7 @@
 package hammer
 
 import (
+	"fmt"
 	"os"
 	"testing"
 )
@@ -33,13 +34,22 @@ func TestBase64(t *testing.T) {
 	init_parser()
 
 	input := []byte("aGk=") // "hi"
-	result := Parse(document, input)
+	result := CParse(document, input)
 	defer result.Free()
 
 	// show result of parse actions
-	if result.hParseResult.r.ast != nil {
-		Pprint(os.Stdout, result.hParseResult.r.ast, 0, 0)
+	if result.r.ast != nil {
+		Pprint(os.Stdout, result.r.ast, 0, 0)
 	} else {
 		t.Error("fail")
 	}
+}
+
+func TestBase64_2(t *testing.T) {
+	init_parser()
+
+	input := []byte("aGk=") // "hi"
+	ast := Parse(document, input)
+
+	fmt.Printf("%#v\n", ast)
 }
