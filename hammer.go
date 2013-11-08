@@ -22,14 +22,23 @@ type HPredicate C.HPredicate
 type HParser *C.HParser
 type HParserBackend C.HParserBackend
 
+func byteToCArr(p []byte) (arr *C.uint8_t, n C.size_t) {
+	arr = (*C.uint8_t)(unsafe.Pointer(&p[0]))
+	n = C.size_t(len(p))
+
+	return
+}
+
 // HAMMER_FN_DECL(HParseResult*, h_parse,  HParser* parser,  uint8_t* input, size_t length);
-func Parse(parser HParser, input *uint8, length uintptr) HParseResult {
-	return C.h_parse(parser, (*C.uint8_t)(input), C.size_t(length))
+func Parse(parser HParser, input []byte) HParseResult {
+	arr, n := byteToCArr(input)
+	return C.h_parse(parser, arr, n)
 }
 
 // HAMMER_FN_DECL(HParser*, h_token,  uint8_t *str,  size_t len);
-func Token(str *uint8, length uintptr) HParser {
-	return C.h_token((*C.uint8_t)(str), C.size_t(length))
+func Token(str []byte) HParser {
+	arr, n := byteToCArr(str)
+	return C.h_token(arr, n)
 }
 
 // HAMMER_FN_DECL(HParser*, h_ch,  uint8_t c);
@@ -98,13 +107,15 @@ func Middle(p HParser, x HParser, q HParser) HParser { return C.h_middle(p, x, q
 func Action(p HParser, a HAction) HParser { return C.h_action(p, C.HAction(a)) }
 
 //HAMMER_FN_DECL(HParser*, h_in,  uint8_t *charset, size_t length);
-func In(charset *uint8, length uintptr) HParser {
-	return C.h_in((*C.uint8_t)(charset), C.size_t(length))
+func In(charset []byte) HParser {
+	arr, n := byteToCArr(charset)
+	return C.h_in(arr, n)
 }
 
 //HAMMER_FN_DECL(HParser*, h_not_in,  uint8_t *charset, size_t length);
-func Not_in(charset *uint8, length uintptr) HParser {
-	return C.h_not_in((*C.uint8_t)(charset), C.size_t(length))
+func Not_in(charset []byte) HParser {
+	arr, n := byteToCArr(charset)
+	return C.h_not_in(arr, n)
 }
 
 //HAMMER_FN_DECL_NOARG(HParser*, h_end_p);
