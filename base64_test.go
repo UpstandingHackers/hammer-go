@@ -1,4 +1,4 @@
-package parser
+package hammer
 
 import (
 	"fmt"
