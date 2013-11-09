@@ -38,7 +38,7 @@ func TestBase64(t *testing.T) {
 	defer result.Free()
 
 	// show result of parse actions
-	if result.r.ast != nil {
+	if result.r != nil && result.r.ast != nil {
 		Pprint(os.Stdout, result.r.ast, 0, 0)
 	} else {
 		t.Error("fail")

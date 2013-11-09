@@ -25,7 +25,7 @@ func Parse(parser HParser, input []byte) ast.Token {
 	res := CParse(parser, input)
 	defer res.Free()
 
-	if res.r.ast == nil {
+	if res.r == nil || res.r.ast == nil {
 		return nil
 	}
 
