@@ -1,4 +1,4 @@
-package hammer
+package parser
 
 import (
 	"runtime"
