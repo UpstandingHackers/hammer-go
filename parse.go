@@ -1,6 +1,7 @@
 package hammer
 
 import (
+	"errors"
 	"reflect"
 	"unsafe"
 
@@ -21,39 +22,39 @@ import (
 */
 import "C"
 
-func Parse(parser HParser, input []byte) ast.Token {
+var parseFailed = errors.New("parse failed")
+
+func Parse(parser HParser, input []byte) (token ast.Token, err error) {
 	res := CParse(parser, input)
 	defer res.Free()
 
 	if res.r == nil || res.r.ast == nil {
-		return nil
+		return token, parseFailed
 	}
 
-	return convertToken(res.r.ast)
+	return convertToken(res.r.ast), nil
 }
 
 func convertToken(ctoken HParsedToken) ast.Token {
-	loc := ast.Location{
-		IndexF:     int64(ctoken.index),
-		BitOffsetF: uint8(ctoken.bit_offset),
+	token := ast.Token{
+		ByteOffset: int64(ctoken.index),
+		BitOffset:  int8(ctoken.bit_offset),
 	}
 
 	switch ctoken.token_type {
 	case C.TT_NONE:
-		return ast.NoneToken{loc}
+		token.Value = ast.None{}
 	case C.TT_BYTES:
-		return ast.BytesToken{loc, convertHBytes(ctoken)}
+		token.Value = convertHBytes(ctoken)
 	case C.TT_SINT:
-		i := *(*int64)(unionPointer(ctoken))
-		return ast.IntToken{loc, i}
+		token.Value = *(*int64)(unionPointer(ctoken))
 	case C.TT_UINT:
-		i := *(*uint64)(unionPointer(ctoken))
-		return ast.UintToken{loc, i}
+		token.Value = *(*uint64)(unionPointer(ctoken))
 	case C.TT_SEQUENCE:
-		return ast.SequenceToken{loc, convertHCountedArray(ctoken)}
+		token.Value = convertHCountedArray(ctoken)
 	}
 
-	return nil
+	return token
 }
 
 var unionOffset = uintptr(C.HParsedTokenUnionOffset())

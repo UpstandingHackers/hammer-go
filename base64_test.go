@@ -42,10 +42,10 @@ func TestBase64(t *testing.T) {
 	)
 
 	input := []byte("aGk=") // "hi"
-	ast := Parse(documentParser, input)
+	ast, err := Parse(documentParser, input)
 
-	if ast == nil {
-		t.Fatal("failed to parse")
+	if err != nil {
+		t.Fatal(err)
 	}
 
 	fmt.Printf("%#v\n", ast)

@@ -1,38 +1,13 @@
 package ast
 
-type Token interface {
-	Index() int64
-	BitOffset() uint8
+type Token struct {
+	// Using built in parsers, may be a []byte, int64, uint64, []Token or
+	// None. An HAction may return any type.
+	Value interface{}
+
+	ByteOffset int64
+	BitOffset  int8
 }
 
-type Location struct {
-	IndexF     int64
-	BitOffsetF uint8
-}
-
-func (l Location) Index() int64     { return l.Index() }
-func (l Location) BitOffset() uint8 { return l.BitOffsetF }
-
-type NoneToken struct {
-	Location
-}
-
-type BytesToken struct {
-	Location
-	Bytes []byte
-}
-
-type IntToken struct {
-	Location
-	Int int64
-}
-
-type UintToken struct {
-	Location
-	Uint uint64
-}
-
-type SequenceToken struct {
-	Location
-	Seq []Token
-}
+// Represents a TT_NONE token
+type None struct{}
