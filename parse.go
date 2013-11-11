@@ -28,7 +28,7 @@ func Parse(parser HParser, input []byte) (token ast.Token, err error) {
 	res := CParse(parser, input)
 	defer res.Free()
 
-	if res.r == nil || res.r.ast == nil {
+	if res.r == nil {
 		return token, parseFailed
 	}
 
@@ -36,6 +36,10 @@ func Parse(parser HParser, input []byte) (token ast.Token, err error) {
 }
 
 func convertToken(ctoken HParsedToken) ast.Token {
+	if ctoken == nil {
+		return ast.Token{}
+	}
+
 	token := ast.Token{
 		ByteOffset: int64(ctoken.index),
 		BitOffset:  int8(ctoken.bit_offset),
@@ -43,7 +47,7 @@ func convertToken(ctoken HParsedToken) ast.Token {
 
 	switch ctoken.token_type {
 	case C.TT_NONE:
-		token.Value = ast.None{}
+		token.Value = ast.None
 	case C.TT_BYTES:
 		token.Value = convertHBytes(ctoken)
 	case C.TT_SINT:
