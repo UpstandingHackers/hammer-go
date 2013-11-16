@@ -3,6 +3,7 @@ package hammer
 import (
 	"errors"
 	"reflect"
+	"sync"
 	"unsafe"
 
 	"hammer/ast"
@@ -22,20 +23,35 @@ import (
 */
 import "C"
 
+var (
+	// mutex for all variables in this group
+	cacheMu = new(sync.Mutex)
+
+	// tokens pinned to arenas
+	tokenCache = map[*C.HArena][]*C.HParsedToken{}
+
+	// functions cached forever
+	funcCache = []*ActionFunc{}
+)
+
 var parseFailed = errors.New("parse failed")
 
 func Parse(parser HParser, input []byte) (token ast.Token, err error) {
-	res := CParse(parser, input)
+	res := cParse(parser, input)
 	defer res.Free()
 
 	if res.r == nil {
 		return token, parseFailed
 	}
 
-	return convertToken(res.r.ast), nil
+	cacheMu.Lock()
+	delete(tokenCache, res.r.arena)
+	cacheMu.Unlock()
+
+	return convertCToken(res.r.ast), nil
 }
 
-func convertToken(ctoken HParsedToken) ast.Token {
+func convertCToken(ctoken HParsedToken) ast.Token {
 	if ctoken == nil {
 		return ast.Token{}
 	}
@@ -87,7 +103,7 @@ func convertHCountedArray(ctoken HParsedToken) []ast.Token {
 
 	ret := make([]ast.Token, hca.used)
 	for i, token := range elems {
-		ret[i] = convertToken(token)
+		ret[i] = convertCToken(token)
 	}
 
 	return ret

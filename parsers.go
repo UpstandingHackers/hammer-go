@@ -51,8 +51,6 @@ func Left(p HParser, q HParser) HParser              { return C.h_left(p, q) }
 func Right(p HParser, q HParser) HParser             { return C.h_right(p, q) }
 func Middle(p HParser, x HParser, q HParser) HParser { return C.h_middle(p, x, q) }
 
-func Action(p HParser, a HAction) HParser { return C.h_action(p, C.HAction(a)) }
-
 func In(charset []byte) HParser {
 	arr, n := byteToCArr(charset)
 	return C.h_in(arr, n)

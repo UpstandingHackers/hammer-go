@@ -22,7 +22,7 @@ type hParseResult struct {
 }
 
 // Like Parse() but returns an HParseResult instead of an AST. You problably shouldn't be using this.
-func CParse(parser HParser, input []byte) *HParseResult {
+func cParse(parser HParser, input []byte) *HParseResult {
 	arr, n := byteToCArr(input)
 	return newHParseResult(C.h_parse(parser, arr, n))
 }
