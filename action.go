@@ -17,7 +17,10 @@ import "C"
 
 const goHParsedToken = 200
 
-type ActionFunc func(ast.Token) ast.Token
+// ActionFunc allows for transformation and validation of the parse tree
+// represented by the input token. It returns a transformed parse tree as
+// a token and whether or not the parse is valid as a bool.
+type ActionFunc func(token ast.Token) (result ast.Token, ok bool)
 
 func Action(p HParser, a ActionFunc) HParser {
 	fp := &a
@@ -30,10 +33,17 @@ func Action(p HParser, a ActionFunc) HParser {
 }
 
 //export go_action_hook
-func go_action_hook(action unsafe.Pointer, pr *C.HParseResult) *C.HParsedToken {
+func go_action_hook(action unsafe.Pointer, pr *C.HParseResult) C.GoActionResult {
 	act := *(*ActionFunc)(action)
 	token := convertCToken(pr.ast)
-	resultCtoken := convertToken(act(token))
+	result, ok := act(token)
+	if !ok {
+		return C.GoActionResult{
+			valid: 0,
+		}
+	}
+
+	resultCtoken := convertToken(result)
 
 	if resultCtoken != nil {
 		cacheMu.Lock()
@@ -41,7 +51,10 @@ func go_action_hook(action unsafe.Pointer, pr *C.HParseResult) *C.HParsedToken {
 		cacheMu.Unlock()
 	}
 
-	return resultCtoken
+	return C.GoActionResult{
+		token: resultCtoken,
+		valid: 1,
+	}
 }
 
 //TODO: implement NONE, perhaps TT_BYTES and others

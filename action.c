@@ -6,44 +6,52 @@
 HParser* go_action__m(HAllocator* mm__, const HParser* p, void* a);
 
 typedef struct {
-  const HParser *p;
-  // action is a Go *ActionFunc
-  void* action;
+	const HParser *p;
+ 	void* action; // Go type *ActionFunc
 } GoParseAction;
 
 static HParseResult* parse_action(void *env, HParseState *state) {
-  GoParseAction *a = (GoParseAction*)env;
-  if (a->p && a->action) {
-    HParseResult *tmp = h_do_parse(a->p, state);
-    if(tmp) {
-        const HParsedToken *tok = go_action_hook(a->action, tmp);
-        return make_result(state->arena, (HParsedToken*)tok);
-    } else
-      return NULL;
-  } else // either the parser's missing or the action's missing
-    return NULL;
+	GoParseAction *a = (GoParseAction*)env;
+	if (a->p == NULL || a->action == NULL) {
+		// Bad parser. This shouldn't ever happen.
+		return NULL;
+	}
+
+	HParseResult *pr = h_do_parse(a->p, state);
+	if (pr == NULL) {
+		// Upstream HParser failed
+		return NULL;
+	}
+
+	GoActionResult gar = go_action_hook(a->action, pr);
+	if (!gar.valid) {
+		// ActionFunc declared failed parse
+		return NULL;
+	}
+
+	return make_result(state->arena, gar.token);
 }
 
 static const HParserVtable action_vt = {
-  .parse = parse_action,
+	.parse = parse_action,
 };
 
 HParser* go_action(const HParser* p, void* a) {
-  return go_action__m(&system_allocator, p, a);
+	return go_action__m(&system_allocator, p, a);
 }
 
 HParser* go_action__m(HAllocator* mm__, const HParser* p, void* a) {
-  GoParseAction *env = h_new(GoParseAction, 1);
-  env->p = p;
-  env->action = a;
+	GoParseAction *env = h_new(GoParseAction, 1);
+	env->p = p;
+	env->action = a;
 
-  return h_new_parser(mm__, &action_vt, env);
+	return h_new_parser(mm__, &action_vt, env);
 }
 
 void assignUintValue(HParsedToken* token, uint64_t value) {
-  token->uint = value;
+	token->uint = value;
 }
 
 void assignVoidValue(HParsedToken* token, void* value) {
-  token->user = value;
+	token->user = value;
 }

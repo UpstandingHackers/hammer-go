@@ -19,28 +19,26 @@ func init() {
 
 	digits := hammer.Many1(hammer.Ch_range('0', '9'))
 
-	uint_10 := hammer.Action(digits, func(token ast.Token) ast.Token {
+	uint_10 := hammer.Action(digits, func(token ast.Token) (ast.Token, bool) {
 		numstr := charSequenceString(token.Value.([]ast.Token))
 
 		num, err := strconv.ParseUint(numstr, 10, 64)
 		if err != nil {
-			token.Value = nil
-			return token
+			return token, false
 		}
 
 		token.Value = num
-		return token
+		return token, true
 	})
 
-	int_10 := hammer.Action(hammer.Sequence(hammer.Optional(neg), digits), func(token ast.Token) ast.Token {
+	int_10 := hammer.Action(hammer.Sequence(hammer.Optional(neg), digits), func(token ast.Token) (ast.Token, bool) {
 		tokens := token.Value.([]ast.Token)
 		neg, digits := tokens[0], tokens[1]
 		numstr := charSequenceString(digits.Value.([]ast.Token))
 
 		num, err := strconv.ParseInt(numstr, 10, 64)
 		if err != nil {
-			token.Value = nil
-			return token
+			return token, false
 		}
 
 		if neg.Value != ast.None {
@@ -48,7 +46,7 @@ func init() {
 		}
 
 		token.Value = num
-		return token
+		return token, true
 	})
 
 	b_string := hammer.Length_value(hammer.Left(uint_10, colon), hammer.Uint8())

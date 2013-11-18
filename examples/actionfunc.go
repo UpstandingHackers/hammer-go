@@ -13,17 +13,16 @@ var uint_10 hammer.HParser
 
 func init() {
 	digit := hammer.Ch_range('0', '9')
-	uint_10 = hammer.Action(hammer.Many1(digit), func(token ast.Token) ast.Token {
+	uint_10 = hammer.Action(hammer.Many1(digit), func(token ast.Token) (ast.Token, bool) {
 		numstr := charSequenceString(token.Value.([]ast.Token))
 
 		num, err := strconv.ParseUint(numstr, 10, 64)
 		if err != nil {
-			token.Value = nil
-			return token
+			return ast.Token{}, false
 		}
 
 		token.Value = num
-		return token
+		return token, true
 	})
 }
 
