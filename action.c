@@ -32,8 +32,33 @@ static HParseResult* parse_action(void *env, HParseState *state) {
 	return make_result(state->arena, gar.token);
 }
 
+static void desugar_action(HAllocator *mm__, HCFStack *stk__, void *env) {
+	GoParseAction *a = (GoParseAction*)env;
+
+	HCFS_BEGIN_CHOICE() {
+		HCFS_BEGIN_SEQ() {
+			HCFS_DESUGAR(a->p);
+		} HCFS_END_SEQ();
+		HCFS_THIS_CHOICE->action = a->action;
+		HCFS_THIS_CHOICE->reshape = h_act_first;
+	} HCFS_END_CHOICE();
+}
+
+static bool action_isValidRegular(void *env) {
+	GoParseAction *a = (GoParseAction*)env;
+	return a->p->vtable->isValidRegular(a->p->env);
+}
+
+static bool action_isValidCF(void *env) {
+	GoParseAction *a = (GoParseAction*)env;
+	return a->p->vtable->isValidCF(a->p->env);
+}
+
 static const HParserVtable action_vt = {
 	.parse = parse_action,
+	.isValidRegular = action_isValidRegular,
+	.isValidCF = action_isValidCF,
+	.desugar = desugar_action,
 };
 
 HParser* go_action(const HParser* p, void* a) {
