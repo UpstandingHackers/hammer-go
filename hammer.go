@@ -14,15 +14,15 @@ import "C"
 
 type Parser *C.HParser
 
-var (
-	Packrat = ParserBackend(C.PB_PACKRAT) // default
-	Regular = ParserBackend(C.PB_REGULAR)
-	LLk     = ParserBackend(C.PB_LLk)
-	LALR    = ParserBackend(C.PB_LALR)
-	GLR     = ParserBackend(C.PB_GLR)
-)
-
 type ParserBackend C.HParserBackend
+
+const (
+	Packrat ParserBackend = C.PB_PACKRAT // default
+	Regular ParserBackend = C.PB_REGULAR
+	LLk     ParserBackend = C.PB_LLk
+	LALR    ParserBackend = C.PB_LALR
+	GLR     ParserBackend = C.PB_GLR
+)
 
 func BindIndirect(indirect Parser, inner Parser) {
 	C.h_bind_indirect(indirect, inner)
