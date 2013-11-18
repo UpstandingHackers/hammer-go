@@ -12,7 +12,7 @@ var aParser hammer.Parser
 func init() {
 	aParser = hammer.Indirect()
 
-	hammer.Bind_indirect(aParser, hammer.Sequence(
+	hammer.BindIndirect(aParser, hammer.Sequence(
 		hammer.Ch('a'),
 		hammer.Choice(aParser, hammer.End()),
 	))

@@ -56,12 +56,12 @@ func init() {
 
 	anyType := hammer.Choice(b_int, b_string, b_list, b_dict)
 
-	hammer.Bind_indirect(b_list, hammer.Sequence(
+	hammer.BindIndirect(b_list, hammer.Sequence(
 		hammer.Ch('l'),
 		hammer.Many(anyType),
 		end,
 	))
-	hammer.Bind_indirect(b_dict, hammer.Sequence(
+	hammer.BindIndirect(b_dict, hammer.Sequence(
 		hammer.Ch('d'),
 		hammer.Many(hammer.Sequence(b_string, anyType)),
 		end,
