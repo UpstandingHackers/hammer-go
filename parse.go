@@ -38,7 +38,7 @@ var parseFailed = errors.New("parse failed")
 
 func Parse(parser Parser, input []byte) (token ast.Token, err error) {
 	res := cParse(parser, input)
-	defer res.Free()
+	defer res.free()
 
 	if res.r == nil {
 		return token, parseFailed
@@ -51,7 +51,7 @@ func Parse(parser Parser, input []byte) (token ast.Token, err error) {
 	return convertCToken(res.r.ast), nil
 }
 
-func convertCToken(ctoken HParsedToken) ast.Token {
+func convertCToken(ctoken *C.HParsedToken) ast.Token {
 	if ctoken == nil {
 		return ast.Token{}
 	}
@@ -79,18 +79,17 @@ func convertCToken(ctoken HParsedToken) ast.Token {
 
 var unionOffset = uintptr(C.HParsedTokenUnionOffset())
 
-func unionPointer(ctoken HParsedToken) unsafe.Pointer {
+func unionPointer(ctoken *C.HParsedToken) unsafe.Pointer {
 	// Conversion here is to ensure ctoken is in fact a pointer
-	ptr := (*C.HParsedToken)(ctoken)
-	return unsafe.Pointer(uintptr(unsafe.Pointer(ptr)) + unionOffset)
+	return unsafe.Pointer(uintptr(unsafe.Pointer(ctoken)) + unionOffset)
 }
 
-func convertHBytes(ctoken HParsedToken) []byte {
+func convertHBytes(ctoken *C.HParsedToken) []byte {
 	hbytes := *(*C.HBytes)(unionPointer(ctoken))
 	return C.GoBytes(unsafe.Pointer(hbytes.token), C.int(hbytes.len))
 }
 
-func convertHCountedArray(ctoken HParsedToken) []ast.Token {
+func convertHCountedArray(ctoken *C.HParsedToken) []ast.Token {
 	hca := *(**C.HCountedArray)(unionPointer(ctoken))
 
 	// elems is a []*C.HParsedToken using the hca.elements as a backing array
