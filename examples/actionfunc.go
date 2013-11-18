@@ -9,10 +9,10 @@ import (
 	"hammer/ast"
 )
 
-var uint_10 hammer.HParser
+var uint_10 hammer.Parser
 
 func init() {
-	digit := hammer.Ch_range('0', '9')
+	digit := hammer.ChRange('0', '9')
 	uint_10 = hammer.Action(hammer.Many1(digit), func(token ast.Token) (ast.Token, bool) {
 		numstr := charSequenceString(token.Value.([]ast.Token))
 

@@ -36,7 +36,7 @@ var (
 
 var parseFailed = errors.New("parse failed")
 
-func Parse(parser HParser, input []byte) (token ast.Token, err error) {
+func Parse(parser Parser, input []byte) (token ast.Token, err error) {
 	res := cParse(parser, input)
 	defer res.Free()
 

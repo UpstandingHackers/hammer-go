@@ -10,14 +10,14 @@ import (
 	"hammer/ast"
 )
 
-var bencode hammer.HParser
+var bencode hammer.Parser
 
 func init() {
 	end := hammer.Ch('e')
 	colon := hammer.Ch(':')
 	neg := hammer.Ch('-')
 
-	digits := hammer.Many1(hammer.Ch_range('0', '9'))
+	digits := hammer.Many1(hammer.ChRange('0', '9'))
 
 	uint_10 := hammer.Action(digits, func(token ast.Token) (ast.Token, bool) {
 		numstr := charSequenceString(token.Value.([]ast.Token))
@@ -49,7 +49,7 @@ func init() {
 		return token, true
 	})
 
-	b_string := hammer.Length_value(hammer.Left(uint_10, colon), hammer.Uint8())
+	b_string := hammer.LengthValue(hammer.Left(uint_10, colon), hammer.Uint8())
 	b_int := hammer.Sequence(hammer.Ch('i'), int_10, end)
 	b_list := hammer.Indirect()
 	b_dict := hammer.Indirect()

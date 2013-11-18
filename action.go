@@ -22,7 +22,7 @@ const goHParsedToken = 200
 // a token and whether or not the parse is valid as a bool.
 type ActionFunc func(token ast.Token) (result ast.Token, ok bool)
 
-func Action(p HParser, a ActionFunc) HParser {
+func Action(p Parser, a ActionFunc) Parser {
 	fp := &a
 
 	cacheMu.Lock()
