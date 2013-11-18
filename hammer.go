@@ -24,7 +24,7 @@ var (
 
 type ParserBackend C.HParserBackend
 
-func Bind_indirect(indirect Parser, inner Parser) {
+func BindIndirect(indirect Parser, inner Parser) {
 	C.h_bind_indirect(indirect, inner)
 }
 
