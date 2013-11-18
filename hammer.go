@@ -17,7 +17,6 @@ import "C"
 
 type HParsedToken *C.HParsedToken
 type HAction C.HAction
-type HPredicate C.HPredicate
 type HParser *C.HParser
 type HParserBackend C.HParserBackend
 

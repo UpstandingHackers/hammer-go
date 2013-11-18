@@ -122,8 +122,6 @@ func Length_value(length HParser, value HParser) HParser {
 	return C.h_length_value(length, value)
 }
 
-func Attr_bool(p HParser, pred HPredicate) HParser { return C.h_attr_bool(p, pred) }
-
 func And(p HParser) HParser { return C.h_and(p) }
 
 func Not(p HParser) HParser { return C.h_not(p) }
