@@ -1,6 +1,7 @@
 package hammer
 
 import (
+	"errors"
 	"unsafe"
 )
 
@@ -12,14 +13,28 @@ import (
 import "C"
 
 type Parser *C.HParser
+
+var (
+	Packrat = ParserBackend(C.PB_PACKRAT) // default
+	Regular = ParserBackend(C.PB_REGULAR)
+	LLk     = ParserBackend(C.PB_LLk)
+	LALR    = ParserBackend(C.PB_LALR)
+	GLR     = ParserBackend(C.PB_GLR)
+)
+
 type ParserBackend C.HParserBackend
 
 func Bind_indirect(indirect Parser, inner Parser) {
 	C.h_bind_indirect(indirect, inner)
 }
 
-func Compile(parser Parser, backend ParserBackend, params unsafe.Pointer) int {
-	return int(C.h_compile(parser, C.HParserBackend(backend), params))
+func Compile(parser Parser, backend ParserBackend, params unsafe.Pointer) error {
+	ret := int(C.h_compile(parser, C.HParserBackend(backend), params))
+	if ret != 0 {
+		return errors.New("failed to compile")
+	}
+
+	return nil
 }
 
 // utility function to convert a byteslice to a C array
