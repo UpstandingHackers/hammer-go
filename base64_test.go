@@ -5,11 +5,11 @@ import (
 	"testing"
 )
 
-func base64_parser() HParser {
-	digit := Ch_range('0', '9')
+func base64_parser() Parser {
+	digit := ChRange('0', '9')
 	alpha := Choice(
-		Ch_range('A', 'Z'),
-		Ch_range('a', 'z'),
+		ChRange('A', 'Z'),
+		ChRange('a', 'z'),
 	)
 
 	plus := Ch('+')
@@ -20,7 +20,7 @@ func base64_parser() HParser {
 	bsfdig_4bit := In([]byte("AEIMQUYcgkosw048"))
 	bsfdig_2bit := In([]byte("AQgw"))
 
-	base64_3 := Repeat_n(bsfdig, 4)
+	base64_3 := RepeatN(bsfdig, 4)
 	base64_2 := Sequence(bsfdig, bsfdig, bsfdig_4bit, equals)
 	base64_1 := Sequence(bsfdig, bsfdig_2bit, equals, equals)
 
@@ -38,7 +38,7 @@ func TestBase64(t *testing.T) {
 	base64Parser := base64_parser()
 	documentParser := Sequence(
 		Whitespace(base64Parser),
-		Whitespace(End_p()),
+		Whitespace(End()),
 	)
 
 	input := []byte("aGk=") // "hi"
