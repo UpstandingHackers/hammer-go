@@ -45,8 +45,7 @@ static void desugar_action(HAllocator *mm__, HCFStack *stk__, void *env) {
 }
 
 static bool action_isValidRegular(void *env) {
-	GoParseAction *a = (GoParseAction*)env;
-	return a->p->vtable->isValidRegular(a->p->env);
+	return false;
 }
 
 static bool action_isValidCF(void *env) {
