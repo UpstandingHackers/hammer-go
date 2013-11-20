@@ -1,19 +1,21 @@
 package main
 
 import (
+	"fmt"
 	"hammer"
+	"log"
 )
 
-func jsonParser() hammer.HParser {
+func jsonParser_init() hammer.Parser {
 	// string
 	jsonString := hammer.Sequence(
 		hammer.Ch('"'),
 		hammer.Many1(
 			hammer.Choice(
-				hammer.Ch_range('\x20', '\x21'), // skip "
-				hammer.Ch_range('\x23', '\x2E'), // skip /
-				hammer.Ch_range('\x30', '\x5B'), // skip \
-				hammer.Ch_range('\x5D', '\x7E'), // skip DEL
+				hammer.ChRange('\x20', '\x21'), // skip "
+				hammer.ChRange('\x23', '\x2E'), // skip /
+				hammer.ChRange('\x30', '\x5B'), // skip \
+				hammer.ChRange('\x5D', '\x7E'), // skip DEL
 				hammer.Sequence(hammer.Ch('\\'), hammer.Ch('"')),
 				hammer.Sequence(hammer.Ch('\\'), hammer.Ch('\\')),
 				hammer.Sequence(hammer.Ch('\\'), hammer.Ch('/')),
@@ -34,18 +36,18 @@ func jsonParser() hammer.HParser {
 		hammer.Choice(
 			hammer.Ch('0'),
 			hammer.Sequence(
-				hammer.Ch_range('1', '9'),
-				hammer.Many1(hammer.Ch_range('0', '9')),
+				hammer.ChRange('1', '9'),
+				hammer.Many1(hammer.ChRange('0', '9')),
 			),
 		),
 		hammer.Optional(hammer.Sequence(
 			hammer.Ch('.'),
-			hammer.Many1(hammer.Ch_range(0, 9)),
+			hammer.Many1(hammer.ChRange(0, 9)),
 		)),
 		hammer.Optional(hammer.Sequence(
 			hammer.Choice(hammer.Ch('e'), hammer.Ch('E')),
 			hammer.Optional(hammer.Choice(hammer.Ch('+'), hammer.Ch('-'))),
-			hammer.Many1(hammer.Ch_range(0, 9)),
+			hammer.Many1(hammer.ChRange(0, 9)),
 		)),
 	)
 
@@ -65,7 +67,7 @@ func jsonParser() hammer.HParser {
 	)
 
 	// array
-	hammer.Bind_indirect(jsonArray,
+	hammer.BindIndirect(jsonArray,
 		hammer.Sequence(
 			hammer.Ch('['),
 			hammer.SepBy1(jsonValue, hammer.Ch(',')),
@@ -74,7 +76,7 @@ func jsonParser() hammer.HParser {
 	)
 
 	// object
-	hammer.Bind_indirect(jsonObject,
+	hammer.BindIndirect(jsonObject,
 		hammer.Sequence(
 			hammer.Ch('{'),
 			jsonString,
@@ -88,9 +90,18 @@ func jsonParser() hammer.HParser {
 }
 
 func main() {
-	// init parser
-	jsonParser()
+	jsonParser := jsonParser_init()
+	documentParser := hammer.Sequence(
+		hammer.Whitespace(jsonParser),
+		hammer.Whitespace(hammer.End()),
+	)
 
-	// read input
+	input := []byte("{\"name\":\"foo\",\"num\":100,\"balance\":1000.21,\"is_vip\":true,\"nickname\":null}")
 
+	ast, err := hammer.Parse(documentParser, input)
+	if err != nil {
+		log.Println(err)
+	}
+
+	fmt.Printf("%#v\n", ast)
 }

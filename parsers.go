@@ -6,7 +6,7 @@ import (
 
 /*
 	#cgo CFLAGS: -Ihammer/src
-	#cgo LDFLAGS: hammer/build/opt/src/libhammer.a
+	#cgo LDFLAGS: /Users/cvincent/go/src/hammer/hammer/build/opt/src/libhammer.a
 	#include <hammer.h>
 */
 import "C"
