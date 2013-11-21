@@ -1,6 +1,6 @@
 #pragma once
 
-#include <hammer.h>
+#include <hammer/hammer.h>
 
 
 typedef struct {

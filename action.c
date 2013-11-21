@@ -1,5 +1,5 @@
 #include <assert.h>
-#include "/Users/cvincent/go/src/hammer/hammer/src/parsers/parser_internal.h"
+#include <hammer/parsers/parser_internal.h>
 #include "action.h"
 
 // prototypes

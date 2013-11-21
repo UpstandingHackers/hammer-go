@@ -10,9 +10,8 @@ import (
 )
 
 /*
-	#cgo CFLAGS: -Ihammer/src
-	#cgo LDFLAGS: /Users/cvincent/go/src/hammer/hammer/build/opt/src/libhammer.a
-	#include <hammer.h>
+	#cgo pkg-config: libhammer
+	#include <hammer/hammer.h>
 	#include <stddef.h>
 
 	int HParsedTokenUnionOffset();

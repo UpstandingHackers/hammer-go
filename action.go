@@ -7,9 +7,8 @@ import (
 )
 
 /*
-	#cgo CFLAGS: -Ihammer/src -std=gnu99
-	#cgo LDFLAGS: /Users/cvincent/go/src/hammer/hammer/build/opt/src/libhammer.a
-	#include <hammer.h>
+	#cgo pkg-config: libhammer
+	#include <hammer/hammer.h>
 
 	#include "action.h"
 */
