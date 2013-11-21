@@ -7,6 +7,7 @@ import (
 
 /*
 	#cgo pkg-config: libhammer
+	#cgo CFLAGS: -std=gnu99
 	#include <hammer/hammer.h>
 */
 import "C"
