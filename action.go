@@ -77,7 +77,8 @@ func convertToken(token ast.Token) *C.HParsedToken {
 		index:      C.size_t(token.ByteOffset),
 		bit_offset: C.char(token.BitOffset),
 	}
-	C.assignVoidValue(ctoken, unsafe.Pointer(&token))
+	union := (**interface{})(unionPointer(ctoken))
+	*union = &token.Value
 
 	return ctoken
 }

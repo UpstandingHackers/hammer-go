@@ -71,6 +71,8 @@ func convertCToken(ctoken *C.HParsedToken) ast.Token {
 		token.Value = *(*uint64)(unionPointer(ctoken))
 	case C.TT_SEQUENCE:
 		token.Value = convertHCountedArray(ctoken)
+	case goHParsedToken:
+		token.Value = **(**interface{})(unionPointer(ctoken))
 	}
 
 	return token
