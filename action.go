@@ -15,7 +15,7 @@ import (
 */
 import "C"
 
-const goHParsedToken = 200
+var goHParsedToken = C.getGoTokenId()
 
 var (
 	// mutex for all variables in this group

@@ -16,3 +16,4 @@ extern GoActionResult go_action_hook(void*, HParseResult*);
 HParser* go_action(const HParser* p, void* a);
 void assignUintValue(HParsedToken* token, uint64_t value);
 void assignVoidValue(HParsedToken* token, void* value);
+HTokenType getGoTokenId();

@@ -79,3 +79,8 @@ void assignUintValue(HParsedToken* token, uint64_t value) {
 void assignVoidValue(HParsedToken* token, void* value) {
 	token->user = value;
 }
+
+HTokenType getGoTokenId() {
+	return h_allocate_token_type("com.prevoty.gotoken");
+}
+
