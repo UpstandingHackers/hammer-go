@@ -1,6 +1,7 @@
 package hammer
 
 import (
+	"sync"
 	"unsafe"
 
 	"hammer/ast"
@@ -15,6 +16,17 @@ import (
 import "C"
 
 const goHParsedToken = 200
+
+var (
+	// mutex for all variables in this group
+	cacheMu = new(sync.Mutex)
+	// tokens pinned to arenas
+	tokenCache = make(map[*C.HArena][]*C.HParsedToken)
+	// values of go tokens
+	gotokenCache = make(map[*C.HArena][]*interface{})
+	// functions cached forever
+	funcCache = []*ActionFunc{}
+)
 
 // ActionFunc allows for transformation and validation of the parse tree
 // represented by the input token. It returns a transformed parse tree as
@@ -42,11 +54,14 @@ func go_action_hook(action unsafe.Pointer, pr *C.HParseResult) C.GoActionResult 
 		}
 	}
 
-	resultCtoken := convertToken(result)
+	resultCtoken, govalue := convertToken(result)
 
 	if resultCtoken != nil {
 		cacheMu.Lock()
 		tokenCache[pr.arena] = append(tokenCache[pr.arena], resultCtoken)
+		if govalue != nil {
+			gotokenCache[pr.arena] = append(gotokenCache[pr.arena], govalue)
+		}
 		cacheMu.Unlock()
 	}
 
@@ -56,11 +71,18 @@ func go_action_hook(action unsafe.Pointer, pr *C.HParseResult) C.GoActionResult 
 	}
 }
 
-//TODO: implement NONE, perhaps TT_BYTES and others
-func convertToken(token ast.Token) *C.HParsedToken {
+//TODO: implement TT_BYTES and other tokens
+func convertToken(token ast.Token) (ctoken *C.HParsedToken, govalue *interface{}) {
 	switch v := token.Value.(type) {
 	case nil:
-		return nil
+		return nil, nil
+	case ast.NoneType:
+		ctoken := &C.HParsedToken{
+			token_type: C.TT_NONE,
+			index:      C.size_t(token.ByteOffset),
+			bit_offset: C.char(token.BitOffset),
+		}
+		return ctoken, nil
 	case uint64:
 		ctoken := &C.HParsedToken{
 			token_type: C.TT_UINT,
@@ -68,11 +90,11 @@ func convertToken(token ast.Token) *C.HParsedToken {
 			bit_offset: C.char(token.BitOffset),
 		}
 		C.assignUintValue(ctoken, C.uint64_t(v))
-		return ctoken
+		return ctoken, nil
 	}
 
 	// go token
-	ctoken := &C.HParsedToken{
+	ctoken = &C.HParsedToken{
 		token_type: goHParsedToken,
 		index:      C.size_t(token.ByteOffset),
 		bit_offset: C.char(token.BitOffset),
@@ -80,5 +102,5 @@ func convertToken(token ast.Token) *C.HParsedToken {
 	union := (**interface{})(unionPointer(ctoken))
 	*union = &token.Value
 
-	return ctoken
+	return ctoken, &token.Value
 }

@@ -3,7 +3,6 @@ package hammer
 import (
 	"errors"
 	"reflect"
-	"sync"
 	"unsafe"
 
 	"hammer/ast"
@@ -21,17 +20,6 @@ import (
 	}
 */
 import "C"
-
-var (
-	// mutex for all variables in this group
-	cacheMu = new(sync.Mutex)
-
-	// tokens pinned to arenas
-	tokenCache = map[*C.HArena][]*C.HParsedToken{}
-
-	// functions cached forever
-	funcCache = []*ActionFunc{}
-)
 
 var parseFailed = errors.New("parse failed")
 
