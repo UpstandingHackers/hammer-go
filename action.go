@@ -50,7 +50,7 @@ func go_action_hook(action unsafe.Pointer, pr *C.HParseResult) C.GoActionResult 
 	result, ok := act(token)
 	if !ok {
 		return C.GoActionResult{
-			valid: 0,
+			valid: false,
 		}
 	}
 
@@ -67,7 +67,7 @@ func go_action_hook(action unsafe.Pointer, pr *C.HParseResult) C.GoActionResult 
 
 	return C.GoActionResult{
 		token: resultCtoken,
-		valid: 1,
+		valid: true,
 	}
 }
 

@@ -29,7 +29,7 @@ func Bits(len int, sign bool) Parser {
 	// bool to C.bool conversion
 	var retVal C.bool
 	if sign {
-		retVal = 1
+		retVal = true
 	}
 
 	return C.h_bits(C.size_t(len), retVal)
