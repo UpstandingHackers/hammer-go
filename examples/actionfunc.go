@@ -5,8 +5,8 @@ import (
 	"log"
 	"strconv"
 
-	"hammer"
-	"hammer/ast"
+	"github.com/prevoty/hammer"
+	"github.com/prevoty/hammer/ast"
 )
 
 var uint_10 hammer.Parser

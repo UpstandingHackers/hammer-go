@@ -6,8 +6,8 @@ import (
 	"os"
 	"strconv"
 
-	"hammer"
-	"hammer/ast"
+	"github.com/prevoty/hammer"
+	"github.com/prevoty/hammer/ast"
 )
 
 var bencode hammer.Parser

@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	"hammer"
 	"log"
+
+	"github.com/prevoty/hammer"
 )
 
 func base64_parser() hammer.Parser {

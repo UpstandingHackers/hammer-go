@@ -4,7 +4,7 @@ import (
 	"sync"
 	"unsafe"
 
-	"hammer/ast"
+	"github.com/prevoty/hammer/ast"
 )
 
 /*

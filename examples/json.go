@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	"hammer"
 	"log"
+
+	"github.com/prevoty/hammer"
 )
 
 func jsonParser_init() hammer.Parser {
