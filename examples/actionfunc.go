@@ -5,8 +5,8 @@ import (
 	"log"
 	"strconv"
 
-	"github.com/prevoty/hammer"
-	"github.com/prevoty/hammer/ast"
+	"gopkg.upstandinghackers.com/hammer"
+	"gopkg.upstandinghackers.com/hammer/ast"
 )
 
 var uint_10 hammer.Parser

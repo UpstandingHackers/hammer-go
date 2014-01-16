@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/prevoty/hammer"
+	"gopkg.upstandinghackers.com/hammer"
 )
 
 var aParser hammer.Parser

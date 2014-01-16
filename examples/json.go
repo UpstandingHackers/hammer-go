@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/prevoty/hammer"
+	"gopkg.upstandinghackers.com/hammer"
 )
 
 func jsonParser_init() hammer.Parser {

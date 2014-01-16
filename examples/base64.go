@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/prevoty/hammer"
+	"gopkg.upstandinghackers.com/hammer"
 )
 
 func base64_parser() hammer.Parser {

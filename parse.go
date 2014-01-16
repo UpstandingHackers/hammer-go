@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"unsafe"
 
-	"github.com/prevoty/hammer/ast"
+	"gopkg.upstandinghackers.com/hammer/ast"
 )
 
 /*
